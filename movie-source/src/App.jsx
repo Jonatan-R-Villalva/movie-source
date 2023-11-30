@@ -31,6 +31,32 @@ function App() {
   });
   setMovies(results);
   setMovie(results[0]);
+  if(results.length){
+    await fetchMovie(results[0].id)
+  }
+}
+
+const fetchMovie = async(id)=>{
+  const {data} = await axios.get(`${apiUrl}/movie/${id}`,{
+    params:{
+      api_key: apiKey,
+      append_to_response: "videos",
+    }
+  })
+
+  if(data.videos && data.videos.results){
+    const trailer = data.videos.results.find(
+      (vid)=> vid.name === 'Official Trailer'
+    );
+    setTrailer(trailer ? trailer : data.videos.results[0])
+  }
+  setMovie(data)
+}
+
+const selectMovie = async(movie)=>{
+  fetchMovie(movie.id);
+  setMovie(movie);
+  window.scrollTo(0,0)
 }
 
 const searchMovies = (e)=>{
@@ -49,6 +75,68 @@ useEffect(() => {
         <input type="text" placeholder='Search' onChange={(e)=>setSearchKey(e.target.value)}/>
         <button className='btn btn-primary'>Search</button>
       </form>
+
+      <div>
+        <main>
+          {movie ?(
+            <div className='viewtrailer'
+            style={{
+              backgroundImage: `url('${imagePath}${movie.backdrop_path}')` 
+              }}
+            >
+            {
+              playing ? (
+                <>
+                <YouTube
+                videoId={trailer.key}
+                className='reproductor container'
+                opts={{
+                  width : "100%",
+                  height : "100%",
+                  playerVars: {
+                    autoplay: 1,
+                    controls: 0,
+                    cc_load_policy: 0,
+                    fs: 0,
+                    iv_load_policy: 0,
+                    modestbranding: 0,
+                    rel: 0,
+                    showinfo: 0
+                  },
+                }}
+                />
+                <button onClick={()=>setPlaying(false)} className='boton'>
+                  Close
+                </button>
+                </>
+              ):(
+                <div className='container'>
+                  <div>
+                    {
+                      trailer ? (
+                        <button
+                        className='boton'
+                        onClick={()=> setPlaying(true)}
+                        type='button'
+                        >
+                          play trailer
+                        </button>
+                      ) : (
+                        "Sorry, no trailer available"
+                      )
+                    }
+                    <h1 className='text-white'>{movie.title}</h1>
+                    <p className='text-white'>{movie.overview}</p>
+                  </div>
+                </div>
+              )
+            }
+            </div>
+          ): null
+          }
+        </main>
+      </div>
+
       <div className="container mt-3">
         <div className="row">
           {movies.map((movie)=>(
