@@ -33,12 +33,22 @@ function App() {
   setMovie(results[0]);
 }
 
+const searchMovies = (e)=>{
+  e.preventDefault();
+  fetchMovies(searchKey)
+}
+
 useEffect(() => {
   fetchMovies()
 }, [])
 
   return (
     <div className='App'>
+      <h2 className='text-center mt-5 mb-5'>Trailer movies</h2>
+      <form className='container mb-4' onSubmit={searchMovies}>
+        <input type="text" placeholder='Search' onChange={(e)=>setSearchKey(e.target.value)}/>
+        <button className='btn btn-primary'>Search</button>
+      </form>
       <div className="container mt-3">
         <div className="row">
           {movies.map((movie)=>(
