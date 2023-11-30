@@ -28,7 +28,9 @@ function App() {
       api_key : apiKey,
       query: searchKey
     }
-  })
+  });
+  setMovies(results);
+  setMovie(results[0]);
 }
   return (
     <div className='App'>
