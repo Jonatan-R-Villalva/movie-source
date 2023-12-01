@@ -140,7 +140,7 @@ useEffect(() => {
       <div className="container mt-3">
         <div className="row">
           {movies.map((movie)=>(
-            <div key={movie.id} className='col-md-4 mb-3'>
+            <div key={movie.id} className='col-md-4 mb-3' onClick={()=>selectMovie(movie)}>
               <img src={`${imageUrl + movie.poster_path}`} alt="" width='100%' height={600}/>
               <h4 className='text-center'>{movie.title}</h4>
             </div>
